@@ -1,0 +1,169 @@
+<div>
+    <form [formGroup]="visitor.VisitorForm" (ngSubmit)="addVisitor()">
+        <div class="mb-3">
+          <label for="Name" class="form-label">Name</label>
+          <input type="text" class="form-control" id="exampleInputName">
+          <small *ngIf="visitor.VisitorForm.controls['Name'].invalid && 
+          visitor.VisitorForm.controls['Name'].touched" class = "text-danger">
+           <sup>*</sup>Name is Required.</small>
+        </div>
+
+        <div class="mb-3">
+          <label for="Purpose" class="form-label">Purpose</label>
+          <input type="text" class="form-control" id="exampleInputPurpose">
+          <small *ngIf="visitor.VisitorForm.controls['Name'].invalid && 
+          visitor.VisitorForm.controls['Purpose'].touched" class = "text-danger">
+           <sup>*</sup>Name is Required.</small>
+        </div>
+        <div class="mb-3">
+        <label class="form-check-label" for="TimeIn">Time In</label>
+          <input type="datetime-local" class="form-control" id="exampleCheck1">
+          <small *ngIf="visitor.VisitorForm.controls['TimeIn'].invalid && 
+          visitor.VisitorForm.controls['TimeIn'].touched" class = "text-danger">
+           <sup>*</sup>Name is Required.</small>
+        </div>
+        <div class="mb-3">
+            <label class="form-check-label" for="TimeOut">Time Out</label>
+              <input type="datetime-local" class="form-control" id="exampleCheck1">
+              <small *ngIf="visitor.VisitorForm.controls['TimeOut'].invalid && 
+              visitor.VisitorForm.controls['TimeOut'].touched" class = "text-danger">
+              <sup>*</sup>Name is Required.</small>
+            </div>
+          <div class="mb-3">
+            <label for="AuthorizedBy">Authorized By</label>
+                <select name="" class="form-select form-control form-group" formControlName="ManagerId" (change)="onManagerChange($event)">
+                    <option value="data.Manager.Name"></option>
+                    <option value="{{item.ManagerId}}" *ngFor="let item of managerList">{{item.Name}}&nbsp;({{item.Department}})</option>
+                </select>
+                <small *ngIf="visitor.VisitorForm.controls['ManagerId'].invalid 
+                && visitor.VisitorForm.controls['ManagerId'].touched"
+                class = "text-danger"><sup>*</sup>Department is Required.</small>
+          </div>
+        <button type="submit" class="btn btn-primary" style="float:right; margin: 5px;" (click)="addVisitor()">Enter</button>
+        <button type="reset" class="btn btn-danger" value="reset" style="float:right; margin: 5px;">Reset</button>
+      </form>
+</div>
+
+<table class="table table-striped table-sm" style="margin: 10px;">
+    <thead>
+        <th>SN</th>
+        <th>Name</th>
+        <th>Purpose</th>
+        <th>Time In</th>
+        <th>Time Out</th>
+        <th>Authorized By</th>
+        <th>Action</th>
+    </thead>
+    <tbody>
+      <tr *ngFor="let data of visitorList;let i = index;">
+        <td>{{i+1}}</td>
+        <td>{{data.Name}}</td>
+        <td>{{data.Purpose}}</td>
+        <td>{{data.TimeIn}}</td>
+        <td>{{data.TimeOut}}</td>
+        <td>{{data.Manager.Department}}&nbsp;{{data.Manager.Name}}</td>
+        <td>
+          <button class="btn btn-primary"
+          (click)="selectedVisitor(data.VisitorId)" data-bs-toggle="modal" data-bs-target="#editVisitorRow">
+            Exit</button>
+          <button  class="btn btn-danger" (click)="fetchVisitorId(data.VisitorId)" data-bs-toggle="modal"
+          data-bs-target="#deleteEmployee"style="margin: 5px;">
+          Delete
+          </button>
+        </td>
+      </tr>
+    </tbody>
+</table>
+
+
+ <!-- Modal for Edit Patient-->
+ <div class="modal fade" id="editVisitorRow" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-md">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Exit Time</h5>
+          <button type="button" class="btn-close" (click)="resetForm()" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body" *ngIf="isVisitorSelected">
+          <form [formGroup]="visitor.VisitorForm" (ngSubmit)="exitTime()">
+         <!-- <div class="row">
+          <div class="col-md-6 mb-4">
+              <label for="Name">Name</label>
+              <input type="text" formControlName="Name" class="form-control form-group">
+              <small *ngIf="visitor.VisitorForm.controls['Name'].invalid && visitor.VisitorForm.controls['Name'].touched"
+              class = "text-danger"> <sup>*</sup>Valid Name is Required.</small>
+          </div>
+          <div class="col-md-6 mb-4">
+              <label for="Purpose">Purpose</label>
+              <input type="text" formControlName="Purpose" class="form-control form-group">
+              <small *ngIf="visitor.VisitorForm.controls['Purpose'].invalid && visitor.VisitorForm.controls['Purpose'].touched"
+              class = "text-danger"><sup>*</sup>Purpose of Visit is Required.</small>
+          </div>
+      </div> -->
+      <!-- <div class="row"> -->
+          <!-- <div class="col-md-6 mb-4">
+              <label for="TimeIn">TimeIn</label>
+              <input type="datetime-local" formControlName="TimeIn" class="form-control form-group">
+              <small *ngIf="visitor.VisitorForm.controls['TimeIn'].invalid && visitor.VisitorForm.controls['TimeIn'].touched"
+              class = "text-danger"><sup>*</sup>Valid Entry Time is Required.</small>
+          </div> -->
+          <div class="col-md-6 mb-4">
+            <label for="TimeOut">Time Out</label>
+            <input type="datetime-local" formControlName="TimeOut" class="form-control form-group" >
+            <small *ngIf="visitor.VisitorForm.controls['TimeOut'].invalid && visitor.VisitorForm.controls['TimeOut'].touched"
+            class = "text-danger"><sup>*</sup>Valid Entry Time is Required.</small>
+        </div>
+        
+      <!-- </div> -->
+      <!-- <div class="row">
+         
+          <div class="col-md-6 mb-4">
+              <label for="Department">Department</label>
+              <select name="" class="form-select" id="" formControlName="Department" (change)="onManagerChange($event)">
+                <option value="{{item.ManagerId}}" *ngFor="let item of managerList" [selected]="item.ManagerId===managerId">{{item.Department}}&nbsp;({{item.Name }})</option>
+            </select>
+            <small *ngIf="visitor.VisitorForm.controls['Department'].invalid && visitor.VisitorForm.controls['Department'].touched"
+              class = "text-danger"><sup>*</sup>Valid Department is Required.</small>
+          </div>
+          <div class="mb-3">
+            <label for="AuthorizedBy">Authorized By</label>
+                <select name="" class="form-select form-control form-group" formControlName="AuthorizedBy" (change)="onManagerChange($event)">
+                    <option value="data.Manager.Name"></option>
+                    <option value="{{item.ManagerId}}" *ngFor="let item of managerList">{{item.Name}}&nbsp;({{item.Department}})</option>
+                </select>
+                <small *ngIf="visitor.VisitorForm.controls['AuthorizedBy'].invalid 
+                && visitor.VisitorForm.controls['AuthorizedBy'].touched"
+                class = "text-danger"><sup>*</sup>Department is Required.</small>
+          </div>
+      </div> -->
+
+      </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" #closebutton class="btn btn-secondary" (click)="resetForm()" data-bs-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-primary" [disabled]="visitor.VisitorForm.invalid" (click)="exitTime()">Exit</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+
+<!--Delete Confirmation Modal -->
+<div class="modal fade" id="deleteEmployee" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+<div class="modal-dialog modal-sm">
+  <div class="modal-content">
+    <div class="modal-header">
+      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      
+    </div>
+    <div class="modal-body">
+      <p class="modal-title" id="deleteModalLabel" style="text-align:center;">Are you sure you want to delete?</p>
+    </div>
+    <div class="modal-footer">
+      <button type="button" #closebutton class="btn btn-secondary" data-bs-dismiss="modal">No</button>
+      <button type="button" class="btn btn-danger" (click)="removeVisitor()">Yes</button>
+    </div>
+  </div>
+</div>
+</div>

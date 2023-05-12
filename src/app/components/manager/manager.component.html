@@ -1,0 +1,148 @@
+
+<!-- Button trigger modal -->
+
+    <button style="float:right; margin:10px; background-color:aquamarine;" type="button" class="btn " data-bs-toggle="modal" data-bs-target="#exampleModal">
+        Add Manager
+      </button>
+<div style="margin: 50px 50px 50px 50px; ">
+
+    <table class="table table-striped table-responsive-md table-bordered" >
+        <thead style="background-color: aquamarine; ">
+            <th>SN</th>
+            <th>Name</th>
+            <th>Department</th>
+            <th>Phone Number</th>
+            <th>Action</th>
+        </thead>
+        <tbody style="margin-bottom: 10px; background-color:rgb(138, 197, 236);">              
+          <tr *ngFor="let data of managerList;let i = index;">
+            <td>{{i+1}}</td>
+            <td>{{data.Name}}</td>
+            <td>{{data.Department}}</td>
+            <td>{{data.Contact}}</td>
+            <td>
+              <button class="btn btn-primary" 
+              (click)="selectedManager(data.Id)" data-bs-toggle="modal" data-bs-target="#editManagerRow">
+                Edit</button>
+              <button  class="btn btn-danger" (click)="fetchManagerId(data?.Id)" data-bs-toggle="modal"
+              data-bs-target="#deleteManager"style="margin: 10px;">
+              Delete
+              </button>
+            </td>
+          </tr>
+        </tbody>
+    </table>
+
+</div>
+
+
+
+
+  
+  <!-- Modal for New Manager-->
+  <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-md">
+      <div class="modal-content">
+        <div class="modal-header" style="background-color: aquamarine;">
+          <h5 class="modal-title" id="exampleModalLabel">Manager</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" onclick="resetManagerForm()"></button>
+        </div>
+        <div class="modal-body">
+         <form  [formGroup]="manager.ManagerForm" (ngSubmit)="addManager()">
+          <div class="row">
+          <div >
+          <label for="Name">Full Name</label>
+            <input type="text" formControlName="Name" class="form-control form-group">
+                <small *ngIf="manager.ManagerForm.controls['Name'].invalid && manager.ManagerForm.controls['Name'].touched"
+                class = "text-danger"><sup>*</sup>Name Required.</small>
+              </div>
+          <div>
+              <label for="Contact">Contact</label>
+              <input type="text" formControlName="Contact" class="form-control form-group">
+                <small *ngIf="manager.ManagerForm.controls['Contact'].invalid && manager.ManagerForm.controls['Contact'].touched"
+                class = "text-danger"><sup>*</sup>Contact Required.</small>
+            </div>
+              
+            <div>
+                <label for="Department">Department</label>
+                <input type="text" formControlName="Department" class="form-control form-group">
+                <small *ngIf="manager.ManagerForm.controls['Department'].invalid && manager.ManagerForm.controls['Department'].touched"
+                class = "text-danger"><sup>*</sup>Department Required.</small>
+            </div>
+              
+              
+            </div>
+            </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" #closebutton class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-primary" [disabled]="manager.ManagerForm.invalid" (click)="addManager()">Submit</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+    <!-- Modal for Edit Doctor-->
+    <div class="modal fade" id="editManagerRow" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-md">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Edit Mangers</h5>
+            <button type="button" class="btn-close" (click)="resetManagerForm()" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body" *ngIf="isManagerSelected">
+          
+            <form  [formGroup]="manager.ManagerForm" (ngSubmit)="editManager()">
+        <div class="row">
+          <div >
+          <label for="Name">Full Name</label>
+            <input type="text" formControlName="Name" class="form-control form-group">
+                <small *ngIf="manager.ManagerForm.controls['Name'].invalid && manager.ManagerForm.controls['Name'].touched"
+                class = "text-danger"><sup>*</sup>Name Required.</small>
+              </div>
+          <div>
+              <label for="Contact">Contact</label>
+              <input type="text" formControlName="Contact" class="form-control form-group">
+                <small *ngIf="manager.ManagerForm.controls['Contact'].invalid && manager.ManagerForm.controls['Contact'].touched"
+                class = "text-danger"><sup>*</sup>Contact Required.</small>
+            </div>
+              
+            <div>
+                <label for="Department">Department</label>
+                <input type="text" formControlName="Department" class="form-control form-group">
+                <small *ngIf="manager.ManagerForm.controls['Department'].invalid && manager.ManagerForm.controls['Department'].touched"
+                class = "text-danger"><sup>*</sup>Department Required.</small>
+            </div>
+              
+              
+            </div>
+      </form>
+          </div>
+          <div class="modal-footer">
+            <button type="button" #closeupdate class="btn btn-secondary" (click)="resetManagerForm()" data-bs-dismiss="modal">Close</button>
+            <button type="button" class="btn btn-primary" data-bs-dismiss="modal" [disabled]="manager.ManagerForm.invalid" (click)="editManager()">Update</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  
+
+<!--Delete Confirmation Modal -->
+<div class="modal fade" id="deleteManager" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-sm">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <p class="modal-title" id="deleteModalLabel" style="text-align:center;">Are you sure you want to delete?</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">No</button>
+        <button type="button" class="btn btn-outline-danger" (click)="removeManager()" data-bs-dismiss="modal">Yes</button>
+      </div>
+    </div>
+  </div>
+</div>
+
